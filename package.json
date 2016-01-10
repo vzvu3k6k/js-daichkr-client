@@ -17,7 +17,7 @@
   "author": "vzvu3k6k",
   "license": "CC0-1.0",
   "dependencies": {
-    "zombie": "^4.2.1"
+    "zombie": "4.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.4.0",

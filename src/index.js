@@ -47,8 +47,12 @@ export default class DaichkrClient {
       });
   }
 
+  buildAntenna(properties) {
+    return new Antenna(this, properties);
+  }
+
   getAntenna(id) {
-    return new Antenna(this, id);
+    return new Antenna(this, { id });
   }
 
   getCsrfToken() {

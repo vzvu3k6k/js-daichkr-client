@@ -2,6 +2,9 @@
 /* eslint func-names:0 */
 import Antenna from '../src/antenna';
 import DaichkrClient from '../src/';
+import assert from 'assert';
+import bluebird from 'bluebird';
+import request from 'request';
 import secret from './secret.json';
 
 function shouldFail(promise) {
@@ -41,6 +44,33 @@ describe('Antenna', function () {
         permission: 'secret',
       });
       return tempAntenna.create();
+    });
+  });
+
+  const get = bluebird.promisify(request.get, { multiArgs: true });
+  const feedUrl = 'http://developer.hatenastaff.com/feed';
+
+  describe('#subscribe', function () {
+    it('should success', function () {
+      tempAntenna.subscribe(feedUrl)
+        .then(() => {
+          return get(tempAntenna.getPath() + '/opml')
+            .then((response, body) => {
+              assert(body.includes(feedUrl));
+            });
+        });
+    });
+  });
+
+  describe('#unsubscribe', function () {
+    it('should success', function () {
+      tempAntenna.unsubscribe(feedUrl)
+        .then(() => {
+          return get(tempAntenna.getPath() + '/opml')
+            .then((response, body) => {
+              assert(!body.includes(feedUrl));
+            });
+        });
     });
   });
 

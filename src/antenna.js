@@ -1,32 +1,14 @@
 import url from 'url';
 
 export default class Antenna {
-  constructor(client, properties) {
+  constructor(client, id) {
     this.client = client;
-    for (let prop of ['id', 'name', 'description', 'permission', 'note']) {
-      this[prop] = properties[prop];
-    }
+    this.id = id;
   }
 
   getPath() {
     if (!this.id) throw new Error('this.id is empty.');
     return `/antenna/${this.id}`;
-  }
-
-  create() {
-    return this.client.post('/antenna/create', {
-      name: this.name,
-      description: this.description,
-      permission: this.permission,
-    }).then((response) => {
-      let path = url.parse(response.url).path;
-      let m = path.match(/^\/antenna\/([^/]+)\//);
-      if (!m) {
-        return Promise.reject('Cannot find antenna ID');
-      }
-      this.id = m[1];
-      return response;
-    });
   }
 
   delete() {
@@ -39,5 +21,18 @@ export default class Antenna {
 
   unsubscribe(uri) {
     return this.client.post(`${this.getPath()}/unsubscribe`, { uri });
+  }
+
+  static create(client, properties) {
+    return client.post('/antenna/create', {
+      name: properties.name,
+      description: properties.description,
+      permission: properties.permission,
+    }).then((response) => {
+      const path = url.parse(response.url).path;
+      const match = path.match(/^\/antenna\/([^/]+)\//);
+      if (!match) return Promise.reject(new Error('Cannot find antenna ID'));
+      return new Antenna(client, match[1]);
+    });
   }
 }

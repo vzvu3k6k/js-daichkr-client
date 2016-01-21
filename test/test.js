@@ -38,12 +38,11 @@ describe('Antenna', function () {
 
   describe('#create', function () {
     it('should success', function () {
-      tempAntenna = new Antenna(loggedInClient, {
+      return Antenna.create(loggedInClient, {
         name: 'js-daichkr-client test',
         description: 'test',
         permission: 'secret',
-      });
-      return tempAntenna.create();
+      }).then((createdAntenna) => tempAntenna = createdAntenna);
     });
   });
 

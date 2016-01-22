@@ -28,6 +28,21 @@ export default class Antenna {
       });
   }
 
+  fetchEditInfo() {
+    if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
+    return this.client.browser.visit(this.getPath() + '/edit')
+      .then(() => {
+        const find = (selector) => this.client.browser.document.querySelector(selector);
+        const description = find('.antenna-edit-form input[name="description"]').value;
+        const permission =
+          find('.antenna-edit-form input[name="permission"][type="radio"][checked]').value;
+        const title = find('.antenna-edit-description a').textContent.trim();
+        const name = find('.antenna-edit-form input[name="name"]').value;
+        const note = find('.antenna-edit-note-form textarea[name="note"]').value;
+        return { description, permission, title, name, note };
+      });
+  }
+
   getPath() {
     if (!this.id) throw new Error('this.id is empty.');
     return `/antenna/${this.id}`;

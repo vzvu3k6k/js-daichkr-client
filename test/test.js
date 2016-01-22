@@ -69,6 +69,20 @@ describe('Antenna', function () {
     });
   });
 
+  describe('#fetchEditInfo', function () {
+    it('should parse an edit page of an antenna', function () {
+      const antenna = new Antenna(loggedInClient, '960973446850557485');
+      return antenna.fetchEditInfo()
+        .then((info) => assert.deepEqual(info, {
+          title: 'どんどんチェック (ひっそり)',
+          name: 'どんどんチェック',
+          description: 'js-daichkr-clientのテスト用',
+          permission: 'secret',
+          note: '大チェッカーで、しゅっとインターネットをチェックしてみませんか。',
+        }));
+    });
+  });
+
   let tempAntenna;
 
   describe('#create', function () {

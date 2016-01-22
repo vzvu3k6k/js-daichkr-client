@@ -6,6 +6,28 @@ export default class Antenna {
     this.id = id;
   }
 
+  fetchInfo() {
+    return this.client.browser.visit(this.getPath())
+      .then(() => {
+        const find = (selector) => this.client.browser.document.querySelector(selector);
+        const description = find('hgroup.article-header-group .description').textContent.trim();
+        const title = find('h1.antenna-title').textContent.trim();
+        let permission;
+        let name;
+        if (find('.status-permission > img[src="/images/ic_lock_24px.svg"]')) {
+          permission = 'secret';
+          name = title.replace(/ \(ひっそり\)$/, '');
+        } else if (find('.status-contributors').textContent.trim() === 'プライベート編集モード') {
+          permission = 'locked';
+          name = title.replace(/^[^の]+の/, '');
+        } else {
+          permission = 'public';
+          name = title;
+        }
+        return { description, permission, title, name };
+      });
+  }
+
   getPath() {
     if (!this.id) throw new Error('this.id is empty.');
     return `/antenna/${this.id}`;

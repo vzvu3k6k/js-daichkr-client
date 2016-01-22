@@ -34,6 +34,41 @@ describe('DaichkrClient', function () {
 });
 
 describe('Antenna', function () {
+  describe('#fetchInfo', function () {
+    it('should parse a public antenna', function () {
+      const antenna = new Antenna(new DaichkrClient(), '960669575395951115');
+      return antenna.fetchInfo()
+        .then((info) => assert.deepEqual(info, {
+          title: '大チェッカーチェッカー',
+          name: '大チェッカーチェッカー',
+          description: '大チェッカー情報を集めてチェック',
+          permission: 'public',
+        }));
+    });
+
+    it('should parse a locked antenna', function () {
+      const antenna = new Antenna(new DaichkrClient(), '960640536987828250');
+      return antenna.fetchInfo()
+        .then((info) => assert.deepEqual(info, {
+          title: 'hitode909の公式アンテナ',
+          name: '公式アンテナ',
+          description: 'hitode909の新着情報をまとめてチェックできます',
+          permission: 'locked',
+        }));
+    });
+
+    it('should parse a secret antenna', function () {
+      const antenna = new Antenna(new DaichkrClient(), '960973446850557485');
+      return antenna.fetchInfo()
+        .then((info) => assert.deepEqual(info, {
+          title: 'どんどんチェック (ひっそり)',
+          name: 'どんどんチェック',
+          description: 'js-daichkr-clientのテスト用',
+          permission: 'secret',
+        }));
+    });
+  });
+
   let tempAntenna;
 
   describe('#create', function () {

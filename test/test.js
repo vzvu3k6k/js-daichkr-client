@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+/* eslint func-names:0 */
 import DaichkrClient from '../src/';
 import secret from './secret.json';
 

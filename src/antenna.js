@@ -43,6 +43,21 @@ export default class Antenna {
       });
   }
 
+  // /antenna/:id/edit requires all of `name`, `description` and `permission` to be provided.
+  // Otherwise, you may get an unwanted result.
+  //   - Without `name` or `description`, it will be set as empty.
+  //   - Without `permission`, the antenna will be gone.
+  updateInfo(info) {
+    if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
+    return this.client.browser.visit(this.getPath() + '/edit')
+      .then(() => {
+        for (const key of Object.keys(info)) {
+          this.client.browser.fill(`.antenna-edit-form input[name="${key}"]`, info[key]);
+        }
+        return this.client.browser.pressButton('.antenna-edit-form-submit');
+      });
+  }
+
   getPath() {
     if (!this.id) throw new Error('this.id is empty.');
     return `/antenna/${this.id}`;

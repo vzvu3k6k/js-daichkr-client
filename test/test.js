@@ -95,6 +95,21 @@ describe('Antenna', function () {
     });
   });
 
+  describe('#updateInfo', function () {
+    it('should success', function () {
+      // Permission is not changed to avoid pollution of 最近のアンテナ in the top page.
+      return tempAntenna.updateInfo({
+        name: 'js-daichkr-client [updated]',
+        description: '[updated]',
+      }).then(() => {
+        return tempAntenna.fetchInfo();
+      }).then((info) => {
+        assert.equal(info.name, 'js-daichkr-client [updated]');
+        assert.equal(info.description, '[updated]');
+      });
+    });
+  });
+
   const get = bluebird.promisify(request.get, { multiArgs: true });
   const feedUrl = 'http://developer.hatenastaff.com/feed';
 

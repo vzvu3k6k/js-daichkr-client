@@ -110,6 +110,18 @@ describe('Antenna', function () {
     });
   });
 
+  describe('#updateNote', function () {
+    it('should success', function () {
+      return tempAntenna.updateNote('みんなで作ろう大チェッカー')
+        .then(() => {
+          return tempAntenna.fetchEditInfo();
+        })
+        .then((info) => {
+          assert.equal(info.note, 'みんなで作ろう大チェッカー');
+        });
+    });
+  });
+
   const get = bluebird.promisify(request.get, { multiArgs: true });
   const feedUrl = 'http://developer.hatenastaff.com/feed';
 

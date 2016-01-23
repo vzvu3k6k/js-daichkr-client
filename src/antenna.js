@@ -58,6 +58,11 @@ export default class Antenna {
       });
   }
 
+  updateNote(note) {
+    if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
+    return this.client.post(`${this.getPath()}/edit_note`, { note });
+  }
+
   getPath() {
     if (!this.id) throw new Error('this.id is empty.');
     return `/antenna/${this.id}`;

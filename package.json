@@ -11,6 +11,7 @@
   "repository": "vzvu3k6k/js-daichkr-client",
   "scripts": {
     "build": "babel src/ --out-dir lib --source-maps",
+    "lint": "eslint src test",
     "prepublish": "npm run build", 
     "test": "mocha"
   },

@@ -3,7 +3,7 @@
 import Antenna from '../src/antenna';
 import DaichkrClient from '../src/';
 import assert from 'assert';
-import bluebird from 'bluebird';
+import pify from 'pify';
 import request from 'request';
 import secret from './secret.json';
 
@@ -122,7 +122,7 @@ describe('Antenna', function () {
     });
   });
 
-  const get = bluebird.promisify(request.get, { multiArgs: true });
+  const get = pify(request.get, { multiArgs: true });
   const feedUrl = 'http://developer.hatenastaff.com/feed';
 
   describe('#subscribe', function () {

@@ -127,7 +127,7 @@ describe('Antenna', function () {
 
   describe('#subscribe', function () {
     it('should success', function () {
-      tempAntenna.subscribe(feedUrl)
+      return tempAntenna.subscribe(feedUrl)
         .then(() => {
           return get(tempAntenna.getPath() + '/opml')
             .then((response, body) => {
@@ -139,7 +139,7 @@ describe('Antenna', function () {
 
   describe('#unsubscribe', function () {
     it('should success', function () {
-      tempAntenna.unsubscribe(feedUrl)
+      return tempAntenna.unsubscribe(feedUrl)
         .then(() => {
           return get(tempAntenna.getPath() + '/opml')
             .then((response, body) => {

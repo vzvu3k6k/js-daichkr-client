@@ -129,7 +129,8 @@ describe('Antenna', function () {
     it('should success', function () {
       return tempAntenna.subscribe(feedUrl)
         .then(() => get(`https://daichkr.hatelabo.jp${tempAntenna.getPath()}/opml`))
-        .then((response, body) => {
+        .then((args) => {
+          const body = args[1];
           assert(body.includes(feedUrl));
         });
     });
@@ -139,7 +140,8 @@ describe('Antenna', function () {
     it('should success', function () {
       return tempAntenna.unsubscribe(feedUrl)
         .then(() => get(`https://daichkr.hatelabo.jp${tempAntenna.getPath()}/opml`))
-        .then((response, body) => {
+        .then((args) => {
+          const body = args[1];
           assert(!body.includes(feedUrl));
         });
     });

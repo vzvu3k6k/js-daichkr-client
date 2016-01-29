@@ -18,7 +18,9 @@
   "author": "vzvu3k6k",
   "license": "CC0-1.0",
   "dependencies": {
-    "zombie": "4.2.1"
+    "css-select": "^1.2.0",
+    "htmlparser2": "^3.9.0",
+    "request": "^2.67.0"
   },
   "devDependencies": {
     "babel-cli": "^6.4.0",

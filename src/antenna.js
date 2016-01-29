@@ -1,4 +1,6 @@
-import url from 'url';
+import cssSelect from 'css-select';
+import htmlparser from 'htmlparser2';
+import htmlUtils from './html-utils';
 
 export default class Antenna {
   constructor(client, id) {
@@ -7,17 +9,19 @@ export default class Antenna {
   }
 
   fetchInfo() {
-    return this.client.browser.visit(this.getPath())
-      .then(() => {
-        const find = (selector) => this.client.browser.document.querySelector(selector);
-        const description = find('hgroup.article-header-group .description').textContent.trim();
-        const title = find('h1.antenna-title').textContent.trim();
+    return this.client.agent.get(this.getUrl())
+      .then(([, body]) => {
+        const doc = htmlparser.parseDOM(body);
+        const description = htmlUtils.getText(
+          cssSelect.selectOne('hgroup.article-header-group .description', doc)).trim();
+        const title = htmlUtils.getText(cssSelect.selectOne('h1.antenna-title', doc)).trim();
         let permission;
         let name;
-        if (find('.status-permission > img[src="/images/ic_lock_24px.svg"]')) {
+        if (cssSelect.selectOne('.status-permission > img[src="/images/ic_lock_24px.svg"]', doc)) {
           permission = 'secret';
           name = title.replace(/ \(ひっそり\)$/, '');
-        } else if (find('.status-contributors').textContent.trim() === 'プライベート編集モード') {
+        } else if (htmlUtils.getText(
+          cssSelect.selectOne('.status-contributors', doc)).trim() === 'プライベート編集モード') {
           permission = 'locked';
           name = title.replace(/^[^の]+の/, '');
         } else {
@@ -30,15 +34,20 @@ export default class Antenna {
 
   fetchEditInfo() {
     if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
-    return this.client.browser.visit(this.getPath() + '/edit')
-      .then(() => {
-        const find = (selector) => this.client.browser.document.querySelector(selector);
-        const description = find('.antenna-edit-form input[name="description"]').value;
-        const permission =
-          find('.antenna-edit-form input[name="permission"][type="radio"][checked]').value;
-        const title = find('.antenna-edit-description a').textContent.trim();
-        const name = find('.antenna-edit-form input[name="name"]').value;
-        const note = find('.antenna-edit-note-form textarea[name="note"]').value;
+    return this.client.agent.get(`${this.getUrl()}/edit`)
+      .then(([, body]) => {
+        const doc = htmlparser.parseDOM(body);
+        const description = cssSelect.selectOne(
+          '.antenna-edit-form input[name="description"]', doc).attribs.value;
+        const permission = cssSelect.selectOne(
+          '.antenna-edit-form input[name="permission"][type="radio"][checked]', doc
+        ).attribs.value;
+        const title = htmlUtils.getText(
+          cssSelect.selectOne('.antenna-edit-description a', doc)).trim();
+        const name = cssSelect.selectOne(
+          '.antenna-edit-form input[name="name"]', doc).attribs.value;
+        const note = htmlUtils.getText(
+          cssSelect.selectOne('.antenna-edit-note-form textarea[name="note"]', doc));
         return { description, permission, title, name, note };
       });
   }
@@ -49,35 +58,34 @@ export default class Antenna {
   //   - Without `permission`, the antenna will be gone.
   updateInfo(info) {
     if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
-    return this.client.browser.visit(this.getPath() + '/edit')
-      .then(() => {
-        for (const key of Object.keys(info)) {
-          this.client.browser.fill(`.antenna-edit-form input[name="${key}"]`, info[key]);
-        }
-        return this.client.browser.pressButton('.antenna-edit-form-submit');
+    return this.client.agent.get(`${this.getUrl()}/edit`)
+      .then(([response, body]) => {
+        const doc = htmlparser.parseDOM(body);
+        const form = cssSelect.selectOne('.antenna-edit-form', doc);
+        return this.client.submitForm(form, response.request.uri.href, info);
       });
   }
 
   updateNote(note) {
     if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
-    return this.client.post(`${this.getPath()}/edit_note`, { note });
+    return this.client.post(`${this.getUrl()}/edit_note`, { note });
   }
 
-  getPath() {
+  getUrl() {
     if (!this.id) throw new Error('this.id is empty.');
-    return `/antenna/${this.id}`;
+    return this.client.resolveUrl(`/antenna/${this.id}`);
   }
 
   delete() {
-    return this.client.post(`${this.getPath()}/delete`);
+    return this.client.post(`${this.getUrl()}/delete`);
   }
 
   subscribe(uri) {
-    return this.client.post(`${this.getPath()}/subscribe`, { uri });
+    return this.client.post(`${this.getUrl()}/subscribe`, { uri });
   }
 
   unsubscribe(uri) {
-    return this.client.post(`${this.getPath()}/unsubscribe`, { uri });
+    return this.client.post(`${this.getUrl()}/unsubscribe`, { uri });
   }
 
   static create(client, properties) {
@@ -85,8 +93,8 @@ export default class Antenna {
       name: properties.name,
       description: properties.description,
       permission: properties.permission,
-    }).then((response) => {
-      const path = url.parse(response.url).path;
+    }).then(([response]) => {
+      const path = response.request.uri.path;
       const match = path.match(/^\/antenna\/([^/]+)\//);
       if (!match) return Promise.reject(new Error('Cannot find antenna ID'));
       return new Antenna(client, match[1]);

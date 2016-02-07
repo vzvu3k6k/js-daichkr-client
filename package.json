@@ -12,7 +12,7 @@
   "scripts": {
     "build": "babel src/ --out-dir lib --source-maps",
     "lint": "eslint src test",
-    "prepublish": "npm lint && npm test && rm -rf lib && npm run build",
+    "prepublish": "npm run lint && npm test && rm -r lib && npm run build",
     "test": "mocha"
   },
   "author": "vzvu3k6k",

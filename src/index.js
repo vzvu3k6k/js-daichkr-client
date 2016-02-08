@@ -36,22 +36,13 @@ export default class DaichkrClient {
         return this.send(req);
       })
       .then(([response, $]) => {
-        if (response.request.uri.href !== 'https://www.hatena.ne.jp/login') {
-          return Promise.reject(new Error('Cannot login: Unknown URL'));
+        if (response.request.uri.href === 'https://www.hatena.ne.jp/login') {
+          const error = $('.error-message');
+          let message = 'Cannot login';
+          if (error) message += `: ${error.text().trim()}`;
+          return Promise.reject(new Error(message));
         }
 
-        const redirection = $('meta[http-equiv="Refresh"]');
-        if (redirection.length) {
-          const nextUrl = redirection.attr('content').match(/URL=(.+)/)[1];
-          return this.get(nextUrl);
-        }
-
-        const error = $('.error-message');
-        let message = 'Cannot login';
-        if (error) message += `: ${error.text().trim()}`;
-        return Promise.reject(new Error(message));
-      })
-      .then(([response, $]) => {
         if (!response.request.uri.href.startsWith('https://www.hatena.ne.jp/oauth/authorize?')) {
           return Promise.reject(new Error('Cannot login: Unknown URL'));
         }
@@ -93,6 +84,14 @@ export default class DaichkrClient {
           return [response, cheerio.load(body)];
         }
         return [response, body];
+      })
+      .then(([response, $]) => {
+        const redirection = $('meta[http-equiv="Refresh"]');
+        if (redirection.length) {
+          const nextUrl = redirection.attr('content').match(/URL=(.+)/)[1];
+          return this.get(nextUrl);
+        }
+        return [response, $];
       });
   }
 

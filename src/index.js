@@ -2,6 +2,7 @@ import Antenna from './antenna';
 import cheerio from 'cheerio';
 import formToRequest from './form-to-request';
 import packageInfo from '../package.json';
+import parseMetaRefresh from 'http-equiv-refresh';
 import pify from 'pify';
 import request from 'request';
 import url from 'url';
@@ -86,10 +87,16 @@ export default class DaichkrClient {
         return [response, body];
       })
       .then(([response, $]) => {
-        const redirection = $('meta[http-equiv="Refresh"]');
+        const redirection = $('meta[http-equiv="Refresh"][content]');
         if (redirection.length) {
-          const nextUrl = redirection.attr('content').match(/URL=(.+)/)[1];
-          return this.get(nextUrl);
+          const content = redirection.attr('content');
+          if (content) {
+            const refresh = parseMetaRefresh(content);
+            if (refresh.timeout < 0) {
+              return [response, $];
+            }
+            return this.get(refresh.url || response.request.uri.href);
+          }
         }
         return [response, $];
       });

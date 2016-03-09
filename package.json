@@ -19,6 +19,7 @@
   "license": "CC0-1.0",
   "dependencies": {
     "cheerio": "^0.20.0",
+    "http-equiv-refresh": "^1.0.0",
     "request": "^2.67.0"
   },
   "devDependencies": {

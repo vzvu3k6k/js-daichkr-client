@@ -90,7 +90,9 @@ describe('Antenna', () => {
         name: 'js-daichkr-client test',
         description: 'test',
         permission: 'secret',
-      }).then((createdAntenna) => tempAntenna = createdAntenna);
+      }).then((createdAntenna) => {
+        tempAntenna = createdAntenna;
+      });
     });
   });
 

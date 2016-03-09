@@ -27,14 +27,14 @@ client.loginWithHatenaId(id, password).
 
 # Test
 
-daichkr.hatelabo.jp is in beta without public APIs, so there are tests to ensure it behaves as expected. You can run them by `npm test`.
+daichkr.hatelabo.jp is in beta without public APIs, so daichkr-client has tests to ensure the service behaves as expected. You can run them by `npm test`.
 
-Some tests need a Hatena ID. Set your username and password to test/secret.json as below: 
+Some tests need a Hatena ID. Set your username and password to test/secret.json as below:
 
 ```json
 {
   "hatenaId": {
-    "username": "...", 
+    "username": "...",
     "password": "..."
   }
 }

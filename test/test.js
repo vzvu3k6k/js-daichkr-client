@@ -1,4 +1,5 @@
 /* eslint-env mocha */
+/* eslint-disable arrow-body-style */
 import Antenna from '../src/antenna';
 import DaichkrClient from '../src/';
 import assert from 'assert';

@@ -1,46 +1,55 @@
 import Antenna from './antenna';
-import Browser from 'zombie';
+import cheerio from 'cheerio';
+import formToRequest from './form-to-request';
 import packageInfo from '../package.json';
-import querystring from 'querystring';
+import parseMetaRefresh from 'http-equiv-refresh';
+import pify from 'pify';
+import request from 'request';
+import url from 'url';
 
 export default class DaichkrClient {
   constructor() {
+    const baseRequest = request.defaults({
+      // required by loginWithHatenaId after submitting form[action="/oauth/authorize"]
+      followAllRedirects: true,
+
+      headers: { 'User-Agent': `npm/${packageInfo.name}/${packageInfo.version}` },
+      jar: request.jar(),
+    });
+    this.agent = pify(baseRequest, { multiArgs: true });
+    this.baseUrl = 'https://daichkr.hatelabo.jp/';
     this.loggedIn = false;
-    this.browser = new Browser();
-    this.browser.site = 'https://daichkr.hatelabo.jp';
-    this.browser.userAgent = `npm/${packageInfo.name}/${packageInfo.version}`;
-    this.browser.runScripts = false;
   }
 
-  loginWithHatenaId(username, password) {
+  resolveUrl(to) {
+    return url.resolve(this.baseUrl, to);
+  }
+
+  loginWithHatenaId(name, password) {
     if (this.loggedIn) return Promise.resolve();
-    return this.browser.visit('/login')
-      .then(() => {
-        return this.browser
-          .fill('name', username)
-          .fill('password', password)
-          .fill('persistent', 0)
-          .pressButton('次ステップ');
+    return this.get(this.resolveUrl('/login'))
+      .then(([response, $]) => {
+        const form = $('form[action="/login"]');
+        const req = formToRequest(
+          form, response.request.uri.href,
+          { name, password, persistent: 0 }
+        );
+        return this.send(req);
       })
-      .then(() => {
-        const message = this.browser.document.querySelector('.error-message');
-        if (message) {
-          return Promise.reject(new Error(`Cannot login: ${message.textContent.trim()}`));
+      .then(([response, $]) => {
+        if (response.request.uri.href === 'https://www.hatena.ne.jp/login') {
+          const error = $('.error-message');
+          let message = 'Cannot login';
+          if (error) message += `: ${error.text().trim()}`;
+          return Promise.reject(new Error(message));
         }
 
-        // follow redirection by <meta>
-        // based on getMetaRefreshURL in github.com/assaf/zombie/src/document.js
-        const meta = this.browser.document.querySelector('meta[http-equiv="Refresh"]');
-        if (meta && meta.content) {
-          const match = meta.content.match(/^\s*(\d+)(?:\s*;\s*url\s*=\s*(.*?))?\s*(?:;|$)/i);
-          if (match && parseInt(match[1], 10) >= 0) {
-            return this.browser.visit(match[2]);
-          }
+        if (!response.request.uri.href.startsWith('https://www.hatena.ne.jp/oauth/authorize?')) {
+          return Promise.reject(new Error('Cannot login: Unknown URL'));
         }
-        return Promise.reject(new Error('Cannot login: Redirection is not found.'));
-      })
-      .then(() => {
-        return this.browser.pressButton('許可する');
+        const form = $('form[action="/oauth/authorize"]');
+        const req = formToRequest(form, response.request.uri.href);
+        return this.send(req);
       })
       .then(() => {
         this.loggedIn = true;
@@ -58,35 +67,50 @@ export default class DaichkrClient {
   getCsrfToken() {
     if (!this.loggedIn) return Promise.reject(new Error('You must login to get a CSRF token.'));
     if (this.csrfToken) return this.csrfToken;
-    return this.browser.visit('/')
-      .then(() => {
-        const csrf = this.browser.document.querySelector('form input[name="csrf"]');
-        if (csrf && csrf.value) {
-          return (this.csrfToken = Promise.resolve(csrf.value));
+    return this.get(this.resolveUrl('/'))
+      .then(([, $]) => {
+        const csrf = $('form input[name="csrf"]');
+        if (csrf.attr('value')) {
+          return (this.csrfToken = Promise.resolve(csrf.attr('value')));
         }
         return Promise.reject(new Error('Cannot find a CSRF token'));
       });
   }
 
-  post(path, query) {
-    return this.getCsrfToken()
-      .then((csrf) => {
-        const body = querystring.stringify(Object.assign({ csrf }, query));
-        const headers = new this.browser.constructor.Headers();
-        headers.append('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        return this.fetch(path, {
-          method: 'POST',
-          body,
-          headers,
-        });
+  send(req) {
+    return this.agent(req)
+      .then(([response, body]) => {
+        const type = response.headers['content-type'];
+        if (type && /^text\/html(;|$)/.test(type)) {
+          return [response, cheerio.load(body)];
+        }
+        return [response, body];
+      })
+      .then(([response, $]) => {
+        const redirection = $('meta[http-equiv="Refresh"][content]');
+        if (redirection.length) {
+          const content = redirection.attr('content');
+          if (content) {
+            const refresh = parseMetaRefresh(content);
+            if (refresh.timeout < 0) {
+              return [response, $];
+            }
+            return this.get(refresh.url || response.request.uri.href);
+          }
+        }
+        return [response, $];
       });
   }
 
-  fetch(...args) {
-    return this.browser.fetch(...args)
-      .then((response) => {
-        if (response.status === 200) return Promise.resolve(response);
-        return Promise.reject(response);
+  get(targetUrl) {
+    return this.send({ url: targetUrl, method: 'GET' });
+  }
+
+  post(targetUrl, query) {
+    return this.getCsrfToken()
+      .then((csrf) => {
+        const form = Object.assign({ csrf }, query);
+        return this.send({ url: this.resolveUrl(targetUrl), method: 'POST', form });
       });
   }
 }

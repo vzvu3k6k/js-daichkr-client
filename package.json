@@ -26,6 +26,9 @@
   ],
   "license": "CC0-1.0",
   "main": "lib/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": "vzvu3k6k/js-daichkr-client",
   "scripts": {
     "build": "rm -rf lib && babel src/ --out-dir lib --source-maps",

@@ -1,5 +1,4 @@
 /* eslint-env mocha */
-/* eslint-disable arrow-body-style */
 import Antenna from '../src/antenna';
 import DaichkrClient from '../src/';
 import assert from 'assert';
@@ -27,9 +26,7 @@ describe('DaichkrClient', () => {
   });
 
   describe('#getCsrfToken', () => {
-    it('should success if already logged in', () => {
-      return loggedInClient.getCsrfToken();
-    });
+    it('should success if already logged in', () => loggedInClient.getCsrfToken());
   });
 });
 
@@ -86,72 +83,57 @@ describe('Antenna', () => {
   let tempAntenna;
 
   describe('#create', () => {
-    it('should success', () => {
-      return Antenna.create(loggedInClient, {
-        name: 'js-daichkr-client test',
-        description: 'test',
-        permission: 'secret',
-      }).then((createdAntenna) => {
-        tempAntenna = createdAntenna;
-      });
-    });
+    it('should success', () => Antenna.create(loggedInClient, {
+      name: 'js-daichkr-client test',
+      description: 'test',
+      permission: 'secret',
+    }).then((createdAntenna) => {
+      tempAntenna = createdAntenna;
+    }));
   });
 
   describe('#updateInfo', () => {
-    it('should success', () => {
-      // Permission is not changed to avoid pollution of 最近のアンテナ in the top page.
-      return tempAntenna.updateInfo({
-        name: 'js-daichkr-client [updated]',
-        description: '[updated]',
-      }).then(() => {
-        return tempAntenna.fetchInfo();
-      }).then((info) => {
-        assert.equal(info.name, 'js-daichkr-client [updated]');
-        assert.equal(info.description, '[updated]');
-      });
-    });
+    // Permission is not changed to avoid pollution of 最近のアンテナ in the top page.
+    it('should success', () => tempAntenna.updateInfo({
+      name: 'js-daichkr-client [updated]',
+      description: '[updated]',
+    }).then(() => tempAntenna.fetchInfo())
+       .then((info) => {
+         assert.equal(info.name, 'js-daichkr-client [updated]');
+         assert.equal(info.description, '[updated]');
+       }));
   });
 
   describe('#updateNote', () => {
-    it('should success', () => {
-      return tempAntenna.updateNote('みんなで作ろう大チェッカー')
-        .then(() => {
-          return tempAntenna.fetchEditInfo();
-        })
-        .then((info) => {
-          assert.equal(info.note, 'みんなで作ろう大チェッカー');
-        });
-    });
+    it('should success', () => tempAntenna.updateNote('みんなで作ろう大チェッカー')
+       .then(() => tempAntenna.fetchEditInfo())
+       .then((info) => {
+         assert.equal(info.note, 'みんなで作ろう大チェッカー');
+       }));
   });
 
   const get = pify(request.get, { multiArgs: true });
   const feedUrl = 'http://developer.hatenastaff.com/feed';
 
   describe('#subscribe', () => {
-    it('should success', () => {
-      return tempAntenna.subscribe(feedUrl)
-        .then(() => get(`${tempAntenna.getUrl()}/opml`))
-        .then((args) => {
-          const body = args[1];
-          assert(body.includes(feedUrl));
-        });
-    });
+    it('should success', () => tempAntenna.subscribe(feedUrl)
+       .then(() => get(`${tempAntenna.getUrl()}/opml`))
+       .then((args) => {
+         const body = args[1];
+         assert(body.includes(feedUrl));
+       }));
   });
 
   describe('#unsubscribe', () => {
-    it('should success', () => {
-      return tempAntenna.unsubscribe(feedUrl)
-        .then(() => get(`${tempAntenna.getUrl()}/opml`))
-        .then((args) => {
-          const body = args[1];
-          assert(!body.includes(feedUrl));
-        });
-    });
+    it('should success', () => tempAntenna.unsubscribe(feedUrl)
+       .then(() => get(`${tempAntenna.getUrl()}/opml`))
+       .then((args) => {
+         const body = args[1];
+         assert(!body.includes(feedUrl));
+       }));
   });
 
   describe('#delete', () => {
-    it('should success', () => {
-      return tempAntenna.delete();
-    });
+    it('should success', () => tempAntenna.delete());
   });
 });

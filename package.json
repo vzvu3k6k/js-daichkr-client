@@ -1,22 +1,9 @@
 {
   "name": "@vzvu3k6k/daichkr-client",
-  "version": "0.1.0",
   "description": "A client for https://daichkr.hatelabo.jp/",
-  "bugs": "https://github.com/vzvu3k6k/js-daichkr-client/issues",
-  "main": "lib/index.js",
-  "files": [
-    "lib",
-    "src"
-  ],
-  "repository": "vzvu3k6k/js-daichkr-client",
-  "scripts": {
-    "build": "rm -rf lib && babel src/ --out-dir lib --source-maps",
-    "lint": "eslint src test",
-    "prepublish": "npm run lint && npm test && npm run build",
-    "test": "mocha"
-  },
+  "version": "0.1.0",
   "author": "vzvu3k6k",
-  "license": "CC0-1.0",
+  "bugs": "https://github.com/vzvu3k6k/js-daichkr-client/issues",
   "dependencies": {
     "cheerio": "^0.20.0",
     "http-equiv-refresh": "^1.0.0",
@@ -32,5 +19,18 @@
     "mocha": "^2.3.4",
     "pify": "^2.3.0",
     "request": "^2.67.0"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "license": "CC0-1.0",
+  "main": "lib/index.js",
+  "repository": "vzvu3k6k/js-daichkr-client",
+  "scripts": {
+    "build": "rm -rf lib && babel src/ --out-dir lib --source-maps",
+    "lint": "eslint src test",
+    "prepublish": "npm run lint && npm test && npm run build",
+    "test": "mocha"
   }
 }

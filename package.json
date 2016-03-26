@@ -10,9 +10,9 @@
   ],
   "repository": "vzvu3k6k/js-daichkr-client",
   "scripts": {
-    "build": "babel src/ --out-dir lib --source-maps",
+    "build": "rm -rf lib && babel src/ --out-dir lib --source-maps",
     "lint": "eslint src test",
-    "prepublish": "npm run lint && npm test && rm -r lib && npm run build",
+    "prepublish": "npm run lint && npm test && npm run build",
     "test": "mocha"
   },
   "author": "vzvu3k6k",

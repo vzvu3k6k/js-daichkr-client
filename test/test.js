@@ -1,5 +1,4 @@
 /* eslint-env mocha */
-/* eslint func-names:0 */
 import Antenna from '../src/antenna';
 import DaichkrClient from '../src/';
 import assert from 'assert';
@@ -13,29 +12,27 @@ function shouldFail(promise) {
 
 let loggedInClient;
 
-describe('DaichkrClient', function () {
-  describe('#loginWithHatenaId', function () {
-    it('should success with correct ID', function () {
+describe('DaichkrClient', () => {
+  describe('#loginWithHatenaId', () => {
+    it('should success with correct ID', () => {
       loggedInClient = new DaichkrClient();
       return loggedInClient.loginWithHatenaId(secret.hatenaId.username, secret.hatenaId.password);
     });
 
-    it('should fail with wrong ID', function () {
+    it('should fail with wrong ID', () => {
       const client = new DaichkrClient();
       return shouldFail(client.loginWithHatenaId('!', '!'));
     });
   });
 
-  describe('#getCsrfToken', function () {
-    it('should success if already logged in', function () {
-      return loggedInClient.getCsrfToken();
-    });
+  describe('#getCsrfToken', () => {
+    it('should success if already logged in', () => loggedInClient.getCsrfToken());
   });
 });
 
-describe('Antenna', function () {
-  describe('#fetchInfo', function () {
-    it('should parse a public antenna', function () {
+describe('Antenna', () => {
+  describe('#fetchInfo', () => {
+    it('should parse a public antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960669575395951115');
       return antenna.fetchInfo()
         .then((info) => assert.deepEqual(info, {
@@ -46,7 +43,7 @@ describe('Antenna', function () {
         }));
     });
 
-    it('should parse a locked antenna', function () {
+    it('should parse a locked antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960640536987828250');
       return antenna.fetchInfo()
         .then((info) => assert.deepEqual(info, {
@@ -57,7 +54,7 @@ describe('Antenna', function () {
         }));
     });
 
-    it('should parse a secret antenna', function () {
+    it('should parse a secret antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960973446850557485');
       return antenna.fetchInfo()
         .then((info) => assert.deepEqual(info, {
@@ -69,8 +66,8 @@ describe('Antenna', function () {
     });
   });
 
-  describe('#fetchEditInfo', function () {
-    it('should parse an edit page of an antenna', function () {
+  describe('#fetchEditInfo', () => {
+    it('should parse an edit page of an antenna', () => {
       const antenna = new Antenna(loggedInClient, '960973446850557485');
       return antenna.fetchEditInfo()
         .then((info) => assert.deepEqual(info, {
@@ -85,71 +82,58 @@ describe('Antenna', function () {
 
   let tempAntenna;
 
-  describe('#create', function () {
-    it('should success', function () {
-      return Antenna.create(loggedInClient, {
-        name: 'js-daichkr-client test',
-        description: 'test',
-        permission: 'secret',
-      }).then((createdAntenna) => tempAntenna = createdAntenna);
-    });
+  describe('#create', () => {
+    it('should success', () => Antenna.create(loggedInClient, {
+      name: 'js-daichkr-client test',
+      description: 'test',
+      permission: 'secret',
+    }).then((createdAntenna) => {
+      tempAntenna = createdAntenna;
+    }));
   });
 
-  describe('#updateInfo', function () {
-    it('should success', function () {
-      // Permission is not changed to avoid pollution of 最近のアンテナ in the top page.
-      return tempAntenna.updateInfo({
-        name: 'js-daichkr-client [updated]',
-        description: '[updated]',
-      }).then(() => {
-        return tempAntenna.fetchInfo();
-      }).then((info) => {
-        assert.equal(info.name, 'js-daichkr-client [updated]');
-        assert.equal(info.description, '[updated]');
-      });
-    });
+  describe('#updateInfo', () => {
+    // Permission is not changed to avoid pollution of 最近のアンテナ in the top page.
+    it('should success', () => tempAntenna.updateInfo({
+      name: 'js-daichkr-client [updated]',
+      description: '[updated]',
+    }).then(() => tempAntenna.fetchInfo())
+       .then((info) => {
+         assert.equal(info.name, 'js-daichkr-client [updated]');
+         assert.equal(info.description, '[updated]');
+       }));
   });
 
-  describe('#updateNote', function () {
-    it('should success', function () {
-      return tempAntenna.updateNote('みんなで作ろう大チェッカー')
-        .then(() => {
-          return tempAntenna.fetchEditInfo();
-        })
-        .then((info) => {
-          assert.equal(info.note, 'みんなで作ろう大チェッカー');
-        });
-    });
+  describe('#updateNote', () => {
+    it('should success', () => tempAntenna.updateNote('みんなで作ろう大チェッカー')
+       .then(() => tempAntenna.fetchEditInfo())
+       .then((info) => {
+         assert.equal(info.note, 'みんなで作ろう大チェッカー');
+       }));
   });
 
   const get = pify(request.get, { multiArgs: true });
   const feedUrl = 'http://developer.hatenastaff.com/feed';
 
-  describe('#subscribe', function () {
-    it('should success', function () {
-      return tempAntenna.subscribe(feedUrl)
-        .then(() => get(`${tempAntenna.getUrl()}/opml`))
-        .then((args) => {
-          const body = args[1];
-          assert(body.includes(feedUrl));
-        });
-    });
+  describe('#subscribe', () => {
+    it('should success', () => tempAntenna.subscribe(feedUrl)
+       .then(() => get(`${tempAntenna.getUrl()}/opml`))
+       .then((args) => {
+         const body = args[1];
+         assert(body.includes(feedUrl));
+       }));
   });
 
-  describe('#unsubscribe', function () {
-    it('should success', function () {
-      return tempAntenna.unsubscribe(feedUrl)
-        .then(() => get(`${tempAntenna.getUrl()}/opml`))
-        .then((args) => {
-          const body = args[1];
-          assert(!body.includes(feedUrl));
-        });
-    });
+  describe('#unsubscribe', () => {
+    it('should success', () => tempAntenna.unsubscribe(feedUrl)
+       .then(() => get(`${tempAntenna.getUrl()}/opml`))
+       .then((args) => {
+         const body = args[1];
+         assert(!body.includes(feedUrl));
+       }));
   });
 
-  describe('#delete', function () {
-    it('should success', function () {
-      return tempAntenna.delete();
-    });
+  describe('#delete', () => {
+    it('should success', () => tempAntenna.delete());
   });
 });

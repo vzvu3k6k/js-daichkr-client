@@ -87,6 +87,8 @@ export default class DaichkrClient {
         return [response, body];
       })
       .then(([response, $]) => {
+        if (typeof $ !== 'function') return [response, $];
+
         const redirection = $('meta[http-equiv="Refresh"][content]');
         if (redirection.length) {
           const content = redirection.attr('content');

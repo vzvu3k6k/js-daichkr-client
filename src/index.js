@@ -40,7 +40,7 @@ export default class DaichkrClient {
         if (response.request.uri.href === 'https://www.hatena.ne.jp/login') {
           const error = $('.error-message');
           let message = 'Cannot login';
-          if (error) message += `: ${error.text().trim()}`;
+          if (error.length) message += `: ${error.text().trim()}`;
           return Promise.reject(new Error(message));
         }
 

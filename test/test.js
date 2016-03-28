@@ -1,7 +1,9 @@
 /* eslint-env mocha */
 import Antenna from '../src/antenna';
 import DaichkrClient from '../src/';
+import ToughCookieFilestore from 'tough-cookie-filestore';
 import assert from 'assert';
+import path from 'path';
 import pify from 'pify';
 import request from 'request';
 import hatenaId from './secrets/hatenaId.json';
@@ -10,13 +12,15 @@ function shouldFail(promise) {
   return promise.then(() => Promise.reject('Should fail'), () => Promise.resolve());
 }
 
-let loggedInClient;
+const loggedInClient = new DaichkrClient({
+  jar: new ToughCookieFilestore(path.resolve(__dirname, './secrets/logined.jar')),
+});
 
 describe('DaichkrClient', () => {
   describe('#loginWithHatenaId', () => {
     it('should success with correct ID', () => {
-      loggedInClient = new DaichkrClient();
-      return loggedInClient.loginWithHatenaId(hatenaId.username, hatenaId.password);
+      const client = new DaichkrClient();
+      return client.loginWithHatenaId(hatenaId.username, hatenaId.password);
     });
 
     it('should fail with wrong ID', () => {

@@ -18,7 +18,8 @@
     "eslint-config-airbnb": "^6.1.0",
     "mocha": "^2.3.4",
     "pify": "^2.3.0",
-    "request": "^2.67.0"
+    "request": "^2.67.0",
+    "tough-cookie-filestore": "0.0.1"
   },
   "files": [
     "lib",

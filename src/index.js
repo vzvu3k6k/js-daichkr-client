@@ -9,13 +9,13 @@ import request from 'request';
 import url from 'url';
 
 export default class DaichkrClient {
-  constructor() {
+  constructor(options = {}) {
     const baseRequest = request.defaults({
       // required by loginWithHatenaId after submitting form[action="/oauth/authorize"]
       followAllRedirects: true,
 
       headers: { 'User-Agent': `npm/${packageInfo.name}/${packageInfo.version}` },
-      jar: request.jar(),
+      jar: request.jar(options.jar),
     });
     this.agent = pify(baseRequest, { multiArgs: true });
     this.baseUrl = 'https://daichkr.hatelabo.jp/';

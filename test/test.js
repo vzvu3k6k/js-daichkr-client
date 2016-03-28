@@ -4,7 +4,7 @@ import DaichkrClient from '../src/';
 import assert from 'assert';
 import pify from 'pify';
 import request from 'request';
-import secret from './secret.json';
+import hatenaId from './secrets/hatenaId.json';
 
 function shouldFail(promise) {
   return promise.then(() => Promise.reject('Should fail'), () => Promise.resolve());
@@ -16,7 +16,7 @@ describe('DaichkrClient', () => {
   describe('#loginWithHatenaId', () => {
     it('should success with correct ID', () => {
       loggedInClient = new DaichkrClient();
-      return loggedInClient.loginWithHatenaId(secret.hatenaId.username, secret.hatenaId.password);
+      return loggedInClient.loginWithHatenaId(hatenaId.username, hatenaId.password);
     });
 
     it('should fail with wrong ID', () => {

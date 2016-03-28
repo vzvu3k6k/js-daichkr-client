@@ -71,7 +71,6 @@ export default class DaichkrClient {
   }
 
   getCsrfToken() {
-    if (!this.loggedIn) return Promise.reject(new Error('You must login to get a CSRF token.'));
     if (this.csrfToken) return this.csrfToken;
     return this.get(this.resolveUrl('/'))
       .then(([, $]) => {

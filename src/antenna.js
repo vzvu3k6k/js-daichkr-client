@@ -28,7 +28,6 @@ export default class Antenna {
   }
 
   fetchEditInfo() {
-    if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
     return this.client.get(`${this.getUrl()}/edit`)
       .then(([, $]) => {
         const description = $('.antenna-edit-form input[name="description"]').attr('value');
@@ -47,7 +46,6 @@ export default class Antenna {
   //   - Without `name` or `description`, it will be set as empty.
   //   - Without `permission`, the antenna will be gone.
   updateInfo(info) {
-    if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
     return this.client.get(`${this.getUrl()}/edit`)
       .then(([response, $]) => {
         const form = $('.antenna-edit-form');
@@ -57,7 +55,6 @@ export default class Antenna {
   }
 
   updateNote(note) {
-    if (!this.client.loggedIn) return Promise.reject('You must login to access an edit page.');
     return this.client.post(`${this.getUrl()}/edit_note`, { note });
   }
 

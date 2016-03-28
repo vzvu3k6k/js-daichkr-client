@@ -39,3 +39,5 @@ Some tests need a Hatena ID. Set your username and password to test/secrets/hate
   }
 }
 ```
+
+And then `npm run test:prepare`.

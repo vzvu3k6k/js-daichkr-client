@@ -1,4 +1,5 @@
 import Antenna from './antenna';
+import assert from 'assert';
 import cheerio from 'cheerio';
 import formToRequest from './form-to-request';
 import packageInfo from '../package.json';
@@ -37,8 +38,11 @@ export default class DaichkrClient {
         return this.send(req);
       })
       .then(([response, $]) => {
-        if (response.request.uri.href === 'https://www.hatena.ne.jp/login') {
-          const error = $('.error-message');
+        assert(response.request.uri.protocol, 'https:');
+        assert(response.request.uri.host, 'www.hatena.ne.jp');
+
+        const error = $('.error-message');
+        if (error.length) {
           let message = 'Cannot login';
           if (error.length) message += `: ${error.text().trim()}`;
           return Promise.reject(new Error(message));

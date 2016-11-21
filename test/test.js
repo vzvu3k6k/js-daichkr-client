@@ -1,11 +1,11 @@
 /* eslint-env mocha */
-import Antenna from '../src/antenna';
-import DaichkrClient from '../src/';
 import ToughCookieFilestore from 'tough-cookie-filestore';
 import assert from 'assert';
 import path from 'path';
 import pify from 'pify';
 import request from 'request';
+import Antenna from '../src/antenna';
+import DaichkrClient from '../src/';
 import hatenaId from './secrets/hatenaId.json';
 
 function shouldFail(promise) {
@@ -39,7 +39,7 @@ describe('Antenna', () => {
     it('should parse a public antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960669575395951115');
       return antenna.fetchInfo()
-        .then((info) => assert.deepEqual(info, {
+        .then(info => assert.deepEqual(info, {
           title: '大チェッカーチェッカー',
           name: '大チェッカーチェッカー',
           description: '大チェッカー情報を集めてチェック',
@@ -50,7 +50,7 @@ describe('Antenna', () => {
     it('should parse a locked antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960640536987828250');
       return antenna.fetchInfo()
-        .then((info) => assert.deepEqual(info, {
+        .then(info => assert.deepEqual(info, {
           title: 'hitode909の公式アンテナ',
           name: '公式アンテナ',
           description: 'hitode909の新着情報をまとめてチェックできます',
@@ -61,7 +61,7 @@ describe('Antenna', () => {
     it('should parse a secret antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960973446850557485');
       return antenna.fetchInfo()
-        .then((info) => assert.deepEqual(info, {
+        .then(info => assert.deepEqual(info, {
           title: 'どんどんチェック (ひっそり)',
           name: 'どんどんチェック',
           description: 'js-daichkr-clientのテスト用',
@@ -74,7 +74,7 @@ describe('Antenna', () => {
     it('should parse an edit page of an antenna', () => {
       const antenna = new Antenna(loggedInClient, '960973446850557485');
       return antenna.fetchEditInfo()
-        .then((info) => assert.deepEqual(info, {
+        .then(info => assert.deepEqual(info, {
           title: 'どんどんチェック (ひっそり)',
           name: 'どんどんチェック',
           description: 'js-daichkr-clientのテスト用',

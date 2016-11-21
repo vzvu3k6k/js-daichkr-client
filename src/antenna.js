@@ -32,7 +32,7 @@ export default class Antenna {
       .then(([, $]) => {
         const description = $('.antenna-edit-form input[name="description"]').attr('value');
         const permission = $(
-          '.antenna-edit-form input[name="permission"][type="radio"][checked]'
+          '.antenna-edit-form input[name="permission"][type="radio"][checked]',
         ).attr('value');
         const title = $('.antenna-edit-description a').text().trim();
         const name = $('.antenna-edit-form input[name="name"]').attr('value');

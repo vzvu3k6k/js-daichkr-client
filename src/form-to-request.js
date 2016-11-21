@@ -2,9 +2,9 @@ import url from 'url';
 
 export default function formToRequest(form, baseUrl, params = {}) {
   const baseParams = {};
-  for (const { name, value } of form.serializeArray()) {
+  form.serializeArray().forEach(({ name, value }) => {
     baseParams[name] = value;
-  }
+  });
   return {
     url: url.resolve(baseUrl, form.attr('action') || ''),
     method: form.attr('method') || 'GET',

@@ -1,12 +1,12 @@
-import Antenna from './antenna';
 import assert from 'assert';
 import cheerio from 'cheerio';
-import formToRequest from './form-to-request';
-import packageInfo from '../package.json';
 import parseMetaRefresh from 'http-equiv-refresh';
 import pify from 'pify';
 import request from 'request';
 import url from 'url';
+import Antenna from './antenna';
+import formToRequest from './form-to-request';
+import packageInfo from '../package.json';
 
 export default class DaichkrClient {
   constructor(options = {}) {
@@ -33,7 +33,7 @@ export default class DaichkrClient {
         const form = $('form[action="/login"]');
         const req = formToRequest(
           form, response.request.uri.href,
-          { name, password, persistent: 0 }
+          { name, password, persistent: 0 },
         );
         return this.send(req);
       })
@@ -49,9 +49,7 @@ export default class DaichkrClient {
         }
 
         if (!response.request.uri.href.startsWith('https://www.hatena.ne.jp/oauth/authorize?')) {
-          return Promise.reject(new Error(
-            `Cannot login: Unknown URL (${response.request.uri.href})`
-          ));
+          return Promise.reject(new Error(`Cannot login: Unknown URL (${response.request.uri.href})`));
         }
         const form = $('form[action="/oauth/authorize"]');
         const req = formToRequest(form, response.request.uri.href);

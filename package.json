@@ -5,18 +5,18 @@
   "author": "vzvu3k6k",
   "bugs": "https://github.com/vzvu3k6k/js-daichkr-client/issues",
   "dependencies": {
-    "cheerio": "^0.20.0",
+    "cheerio": "^0.22.0",
     "http-equiv-refresh": "^1.0.0",
     "request": "^2.67.0"
   },
   "devDependencies": {
     "babel-cli": "^6.4.0",
-    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-es2015": "^6.3.13",
     "babel-register": "^6.3.13",
-    "eslint": "^2.2.0",
-    "eslint-config-airbnb": "^6.1.0",
-    "mocha": "^2.3.4",
+    "eslint": "^3.10.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "mocha": "^3.1.2",
     "pify": "^2.3.0",
     "request": "^2.67.0",
     "tough-cookie-filestore": "0.0.1"

@@ -5,6 +5,7 @@ import pify from 'pify';
 import request from 'request';
 import url from 'url';
 import Antenna from './antenna';
+import HTTPError from './http-error';
 import formToRequest from './form-to-request';
 import packageInfo from '../package.json';
 
@@ -83,10 +84,15 @@ export default class DaichkrClient {
   send(req) {
     return this.agent(req)
       .then(([response, body]) => {
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          return Promise.reject(new HTTPError(response));
+        }
+
         const type = response.headers['content-type'];
         if (type && /^text\/html(;|$)/.test(type)) {
           return [response, cheerio.load(body)];
         }
+
         return [response, body];
       })
       .then(([response, $]) => {
@@ -119,3 +125,5 @@ export default class DaichkrClient {
       });
   }
 }
+
+DaichkrClient.HTTPError = HTTPError;

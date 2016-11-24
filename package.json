@@ -34,7 +34,7 @@
   "repository": "vzvu3k6k/js-daichkr-client",
   "scripts": {
     "build": "rm -rf lib && babel src/ --out-dir lib --source-maps",
-    "lint": "eslint src test",
+    "lint": "eslint src test bin",
     "prepublish": "npm run lint && npm test && npm run build",
     "test": "mocha",
     "test:prepare": "babel-node bin/bake_test_cookie.js"

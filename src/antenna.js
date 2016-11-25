@@ -8,36 +8,16 @@ export default class Antenna {
 
   fetchInfo() {
     return this.client.get(this.getUrl())
-      .then(([, $]) => {
-        const description = $('hgroup.article-header-group .description').text().trim();
-        const title = $('h1.antenna-title').text().trim();
-        let permission;
-        let name;
-        if ($('.status-permission > img[src="/images/ic_lock_24px.svg"]').length) {
-          permission = 'secret';
-          name = title.replace(/ \(ひっそり\)$/, '');
-        } else if ($('.status-contributors').text().trim() === 'プライベート編集モード') {
-          permission = 'locked';
-          name = title.replace(/^[^の]+の/, '');
-        } else {
-          permission = 'public';
-          name = title;
-        }
-        return { description, permission, title, name };
-      });
+      .then(([, $]) => this.constructor.extractBasicInfo($));
   }
 
   fetchEditInfo() {
     return this.client.get(`${this.getUrl()}/edit`)
       .then(([, $]) => {
-        const description = $('.antenna-edit-form input[name="description"]').attr('value');
-        const permission = $(
-          '.antenna-edit-form input[name="permission"][type="radio"][checked]',
-        ).attr('value');
-        const title = $('.antenna-edit-description a').text().trim();
-        const name = $('.antenna-edit-form input[name="name"]').attr('value');
         const note = $('.antenna-edit-note-form textarea[name="note"]').text();
-        return { description, permission, title, name, note };
+        return Object.assign(this.constructor.extractBasicInfo($), {
+          note,
+        });
       });
   }
 
@@ -86,5 +66,23 @@ export default class Antenna {
       if (!match) return Promise.reject(new Error('Cannot find antenna ID'));
       return new Antenna(client, match[1]);
     });
+  }
+
+  static extractBasicInfo($) {
+    const description = $('hgroup.article-header-group .description').text().trim();
+    const title = $('h1.antenna-title').text().trim();
+    let permission;
+    let name;
+    if ($('.status-permission > img[src="/images/ic_lock_24px.svg"]').length) {
+      permission = 'secret';
+      name = title.replace(/ \(ひっそり\)$/, '');
+    } else if ($('.status-contributors').text().trim() === 'プライベート編集モード') {
+      permission = 'locked';
+      name = title.replace(/^[^の]+の/, '');
+    } else {
+      permission = 'public';
+      name = title;
+    }
+    return { description, permission, title, name };
   }
 }

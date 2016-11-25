@@ -14,8 +14,10 @@ export default class Antenna {
   fetchEditInfo() {
     return this.client.get(`${this.getUrl()}/edit`)
       .then(([, $]) => {
+        const editForm = $('.antenna-edit-form');
         const note = $('.antenna-edit-note-form textarea[name="note"]').text();
         return Object.assign(this.constructor.extractBasicInfo($), {
+          isMine: editForm.length > 0,
           note,
         });
       });

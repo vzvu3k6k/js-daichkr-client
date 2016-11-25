@@ -35,6 +35,18 @@ describe('DaichkrClient', () => {
 });
 
 describe('Antenna', () => {
+  let tempAntenna;
+
+  describe('#create', () => {
+    it('should success', () => Antenna.create(loggedInClient, {
+      name: 'js-daichkr-client test',
+      description: 'test',
+      permission: 'secret',
+    }).then((createdAntenna) => {
+      tempAntenna = createdAntenna;
+    }));
+  });
+
   describe('#fetchInfo', () => {
     it('should parse a public antenna', () => {
       const antenna = new Antenna(new DaichkrClient(), '960669575395951115');
@@ -71,7 +83,19 @@ describe('Antenna', () => {
   });
 
   describe('#fetchEditInfo', () => {
-    it('should parse an edit page of an antenna', () => {
+    it('should parse an edit page of my antenna', () =>
+       tempAntenna.fetchEditInfo()
+       .then(info => assert.deepEqual(info, {
+         title: 'js-daichkr-client test (ひっそり)',
+         name: 'js-daichkr-client test',
+         description: 'test',
+         permission: 'secret',
+         isMine: true,
+         note: '',
+       })),
+      );
+
+    it('should parse an edit page of an antenna which is not mine', () => {
       const antenna = new Antenna(loggedInClient, '960973446850557485');
       return antenna.fetchEditInfo()
         .then(info => assert.deepEqual(info, {
@@ -79,21 +103,10 @@ describe('Antenna', () => {
           name: 'どんどんチェック',
           description: 'js-daichkr-clientのテスト用',
           permission: 'secret',
+          isMine: false,
           note: '大チェッカーで、しゅっとインターネットをチェックしてみませんか。',
         }));
     });
-  });
-
-  let tempAntenna;
-
-  describe('#create', () => {
-    it('should success', () => Antenna.create(loggedInClient, {
-      name: 'js-daichkr-client test',
-      description: 'test',
-      permission: 'secret',
-    }).then((createdAntenna) => {
-      tempAntenna = createdAntenna;
-    }));
   });
 
   describe('#updateInfo', () => {

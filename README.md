@@ -33,10 +33,8 @@ Some tests need a Hatena ID. Set your username and password to test/secrets/hate
 
 ```json
 {
-  "hatenaId": {
-    "username": "...",
-    "password": "..."
-  }
+  "username": "...",
+  "password": "..."
 }
 ```
 

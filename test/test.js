@@ -84,16 +84,16 @@ describe('Antenna', () => {
 
   describe('#fetchEditInfo', () => {
     it('should parse an edit page of my antenna', () =>
-       tempAntenna.fetchEditInfo()
-       .then(info => assert.deepEqual(info, {
-         title: 'js-daichkr-client test (ひっそり)',
-         name: 'js-daichkr-client test',
-         description: 'test',
-         permission: 'secret',
-         isMine: true,
-         note: '',
-       })),
-      );
+      tempAntenna.fetchEditInfo()
+        .then(info => assert.deepEqual(info, {
+          title: 'js-daichkr-client test (ひっそり)',
+          name: 'js-daichkr-client test',
+          description: 'test',
+          permission: 'secret',
+          isMine: true,
+          note: '',
+        })),
+    );
 
     it('should parse an edit page of an antenna which is not mine', () => {
       const antenna = new Antenna(loggedInClient, '960973446850557485');
@@ -115,18 +115,18 @@ describe('Antenna', () => {
       name: 'js-daichkr-client [updated]',
       description: '[updated]',
     }).then(() => tempAntenna.fetchInfo())
-       .then((info) => {
-         assert.equal(info.name, 'js-daichkr-client [updated]');
-         assert.equal(info.description, '[updated]');
-       }));
+      .then((info) => {
+        assert.equal(info.name, 'js-daichkr-client [updated]');
+        assert.equal(info.description, '[updated]');
+      }));
   });
 
   describe('#updateNote', () => {
     it('should success', () => tempAntenna.updateNote('みんなで作ろう大チェッカー')
-       .then(() => tempAntenna.fetchEditInfo())
-       .then((info) => {
-         assert.equal(info.note, 'みんなで作ろう大チェッカー');
-       }));
+      .then(() => tempAntenna.fetchEditInfo())
+      .then((info) => {
+        assert.equal(info.note, 'みんなで作ろう大チェッカー');
+      }));
   });
 
   const get = pify(request.get, { multiArgs: true });
@@ -134,20 +134,20 @@ describe('Antenna', () => {
 
   describe('#subscribe', () => {
     it('should success', () => tempAntenna.subscribe(feedUrl)
-       .then(() => get(`${tempAntenna.getUrl()}/opml`))
-       .then((args) => {
-         const body = args[1];
-         assert(body.includes(feedUrl));
-       }));
+      .then(() => get(`${tempAntenna.getUrl()}/opml`))
+      .then((args) => {
+        const body = args[1];
+        assert(body.includes(feedUrl));
+      }));
   });
 
   describe('#unsubscribe', () => {
     it('should success', () => tempAntenna.unsubscribe(feedUrl)
-       .then(() => get(`${tempAntenna.getUrl()}/opml`))
-       .then((args) => {
-         const body = args[1];
-         assert(!body.includes(feedUrl));
-       }));
+      .then(() => get(`${tempAntenna.getUrl()}/opml`))
+      .then((args) => {
+        const body = args[1];
+        assert(!body.includes(feedUrl));
+      }));
   });
 
   describe('#delete', () => {

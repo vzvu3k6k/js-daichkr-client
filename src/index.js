@@ -75,7 +75,8 @@ export default class DaichkrClient {
       .then(([, $]) => {
         const csrf = $('form input[name="csrf"]');
         if (csrf.attr('value')) {
-          return (this.csrfToken = Promise.resolve(csrf.attr('value')));
+          this.csrfToken = Promise.resolve(csrf.attr('value'));
+          return this.csrfToken;
         }
         return Promise.reject(new Error('Cannot find a CSRF token'));
       });

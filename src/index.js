@@ -49,7 +49,7 @@ export default class DaichkrClient {
           return Promise.reject(new Error(message));
         }
 
-        if (!response.request.uri.href.startsWith('https://www.hatena.ne.jp/oauth/authorize?')) {
+        if (!response.request.uri.path === '/oauth/authorize') {
           return Promise.reject(new Error(`Cannot login: Unknown URL (${response.request.uri.href})`));
         }
         const form = $('form[action="/oauth/authorize"]');

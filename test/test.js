@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import ToughCookieFilestore from 'tough-cookie-filestore';
+import ToughCookieFileStore from 'tough-cookie-file-store';
 import assert from 'assert';
 import path from 'path';
 import pify from 'pify';
@@ -13,7 +13,7 @@ function shouldFail(promise) {
 }
 
 const loggedInClient = new DaichkrClient({
-  jar: new ToughCookieFilestore(path.resolve(__dirname, './secrets/logined.jar')),
+  jar: new ToughCookieFileStore(path.resolve(__dirname, './secrets/logined.jar')),
 });
 
 describe('DaichkrClient', () => {

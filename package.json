@@ -19,7 +19,7 @@
     "eslint-config-airbnb-base": "^11.3.2",
     "eslint-plugin-import": "^2.14.0",
     "mocha": "^5.2.0",
-    "tough-cookie-filestore": "0.0.1"
+    "tough-cookie-file-store": "^1.2.0"
   },
   "files": [
     "lib",

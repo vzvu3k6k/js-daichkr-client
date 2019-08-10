@@ -9,7 +9,7 @@ import DaichkrClient from '../src';
 import hatenaId from './secrets/hatenaId.json';
 
 function shouldFail(promise) {
-  return promise.then(() => Promise.reject('Should fail'), () => Promise.resolve());
+  return promise.then(() => Promise.reject(new Error('Should fail')), () => Promise.resolve());
 }
 
 const loggedInClient = new DaichkrClient({

@@ -1,7 +1,7 @@
 {
   "name": "@vzvu3k6k/daichkr-client",
   "description": "A client for https://daichkr.hatelabo.jp/",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "vzvu3k6k",
   "bugs": "https://github.com/vzvu3k6k/js-daichkr-client/issues",
   "dependencies": {

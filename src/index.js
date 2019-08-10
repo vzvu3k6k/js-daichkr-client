@@ -34,7 +34,7 @@ export default class DaichkrClient {
         const form = $('form[action="/login"]');
         const req = formToRequest(
           form, response.request.uri.href,
-          { name, password, persistent: 0 },
+          { name, password, persistent: 0 }
         );
         return this.send(req);
       })

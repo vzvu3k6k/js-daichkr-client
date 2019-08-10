@@ -15,6 +15,6 @@ client.loginWithHatenaId(hatenaId.username, hatenaId.password)
   .then(
     /* eslint-disable no-console */
     () => { console.log('ok'); },
-    (err) => { console.log(err.stack); },
+    (err) => { console.log(err.stack); }
     /* eslint-enable no-console */
   );

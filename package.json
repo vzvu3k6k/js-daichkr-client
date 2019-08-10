@@ -16,7 +16,6 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-register": "^6.3.13",
     "eslint": "^6.1.0",
-    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "mocha": "^6.2.0",
     "tough-cookie-file-store": "^1.2.0"

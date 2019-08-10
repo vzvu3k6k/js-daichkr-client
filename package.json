@@ -34,7 +34,8 @@
   "scripts": {
     "build": "rm -rf lib && babel src/ --out-dir lib --source-maps",
     "lint": "eslint src test bin",
-    "prepublish": "npm run lint && npm test && npm run build",
+    "prepare": " npm run build",
+    "prepublishOnly": "npm run lint && npm test",
     "test": "mocha",
     "test:prepare": "babel-node bin/bake_test_cookie.js"
   }

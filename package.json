@@ -17,7 +17,9 @@
     "babel-register": "^6.3.13",
     "eslint": "^6.1.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.0",
     "mocha": "^6.2.0",
+    "prettier": "^1.18.2",
     "tough-cookie-file-store": "^1.2.0"
   },
   "files": [

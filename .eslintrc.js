@@ -4,6 +4,10 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings'
   ],
+  plugins: ['prettier'],
+  rules: {
+    'prettier/prettier': 'error'
+  },
   env: {
     es6: true,
     node: true,

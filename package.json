@@ -6,7 +6,7 @@
   "bugs": "https://github.com/vzvu3k6k/js-daichkr-client/issues",
   "dependencies": {
     "cheerio": "^0.22.0",
-    "http-equiv-refresh": "^2.0.0",
+    "http-equiv-refresh": "^2.0.1",
     "pify": "^3.0.0",
     "request": "^2.67.0"
   },

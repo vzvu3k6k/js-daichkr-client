@@ -121,7 +121,7 @@ export default class DaichkrClient {
   post(targetUrl, query) {
     return this.getCsrfToken()
       .then((csrf) => {
-        const form = Object.assign({ csrf }, query);
+        const form = { csrf, ...query };
         return this.send({ url: this.resolveUrl(targetUrl), method: 'POST', form });
       });
   }

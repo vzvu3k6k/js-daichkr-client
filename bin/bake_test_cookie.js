@@ -2,7 +2,7 @@
 import ToughCookieFileStore from 'tough-cookie-file-store';
 import fs from 'fs';
 import path from 'path';
-import DaichkrClient from '../src/';
+import DaichkrClient from '../src';
 import hatenaId from '../test/secrets/hatenaId.json';
 
 const jarPath = path.resolve(__dirname, '../test/secrets/logined.jar');

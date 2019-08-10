@@ -63,7 +63,7 @@ export default class Antenna {
       description: properties.description,
       permission: properties.permission,
     }).then(([response]) => {
-      const path = response.request.uri.path;
+      const { path } = response.request.uri;
       const match = path.match(/^\/antenna\/([^/]+)\//);
       if (!match) return Promise.reject(new Error('Cannot find antenna ID'));
       return new Antenna(client, match[1]);
@@ -85,6 +85,8 @@ export default class Antenna {
       permission = 'public';
       name = title;
     }
-    return { description, permission, title, name };
+    return {
+      description, permission, title, name,
+    };
   }
 }
